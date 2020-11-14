@@ -1,0 +1,17 @@
+#Programa para verificar se a pessoa pode tirar CNH
+again = True
+while again:
+  nome = input('Qual seu nome? ')
+  sobrenome = input('Qual seu sobrenome? ')
+  idade = int(input('Qual sua idade?'))
+  nome_completo = nome + ' ' + sobrenome
+  if idade > 17:
+    print(nome_completo, 'você têm', idade, 'e já pode tirar a CNH')
+  else:
+    print(nome_completo, 'você não têm idade para tirar a CNH')
+  novamente = input('Quer fazer de novo? sim ou não:')
+  if novamente == 'sim':
+    again = True
+  else:
+    print('Tchau')
+    again = False
