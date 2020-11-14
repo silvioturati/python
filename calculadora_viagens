@@ -1,0 +1,125 @@
+#Programa para calculo de custo
+run = True
+while run:
+  print()
+  print('           Calculadora para viagens.           ')
+  print('Comparando viagens de carro e viagens de avião.')
+  print()
+
+  opcao = True
+  while opcao:
+    tipo_viagem = int(input('--- Qual o meio de transporte? (1 = carro ou 2 = avião):'))
+    if tipo_viagem == 1 or tipo_viagem == 2:
+      opcao = False
+    else:
+      print('--- Erro: O número digitado foi ' + str(tipo_viagem) + ' e não é uma opção válida. Digite 1 ou 2')
+  
+  # variaveis que usuário fornecerá
+  qtde_trechos = int(input('--- Quantos trechos? (Somente ida = 1, Se for ida e volta = 2)'))
+  qtde_pessoas = int(input('--- Quantos pessoas?'))
+  dias_viagens = int(input('--- Quantos dias de viagem no total? (com ou sem hospedagem)'))
+  dias_hoteis = int(input('--- Quantos dias de hospedagem em hotéis?'))
+
+  # se tem hospedagem, tem que perguntar o valor da diária
+  if dias_hoteis != 0:
+    valor_diaria = float(input('--- Qual o valor da diária por pessoa?'))
+  else:
+    valor_diaria = 0
+
+  refeicoes_dia = int(input('--- Quantas refeições fora por dia?'))
+  valor_refeicao = float(input('--- Qual o limite de gasto por refeição por pessoa por dia?'))
+
+  # calculos em comum que não depedem do tipo da viagem
+  custos_hospedagem = dias_hoteis * valor_diaria * qtde_pessoas
+  custos_refeicao = valor_refeicao * refeicoes_dia * dias_viagens * qtde_pessoas
+
+  # se a viagem for tipo 1 = carro
+  if tipo_viagem == 1:
+    # coleta de variaveis para este tipo de viagem
+    distancia_km = int(input('--- Qual a distância até o destino (Km)?'))
+    autonomia_veiculo = int(input('--- Quantos km/L o veículo faz?'))
+    valor_pedagio_trecho = float(input('--- Quanto de pedágio até o destino?'))
+    outras_despesas = float(input('--- Alguma outra despesa com o carro?'))
+
+    # Lista de preços combustiveis na ordem: gasolina, etanol, gnv e diesel
+    lista_precos_combustivel = [4.29, 2.15, 3.24, 3.35]
+
+    # Lista com os custos dos combustiveis
+    custos_combustiveis = []
+    for preco_comb in lista_precos_combustivel:
+      custos_combustiveis.append(distancia_km / autonomia_veiculo * preco_comb * qtde_trechos)
+
+    custos_pedagio = valor_pedagio_trecho * qtde_trechos
+
+    # lista com os custos da viagem por combustivel
+    custos_viagem_por_combustivel = []
+    for custo_comb in custos_combustiveis:
+      custos_viagem_por_combustivel.append(custo_comb + custos_pedagio + custos_hospedagem + custos_refeicao + outras_despesas)
+
+    # arredondamento para 2 casas decimais a resposta
+    custos_viagem_por_combustivel = ['% 2f' % round(elem, 2) for elem in custos_viagem_por_combustivel]
+    
+    # mostrando o resultado na tela
+    print()
+    print('           Resultado para viagem de Veículo           ')
+    print()
+    print('Custos com transporte + pedágio usando Gasolina: \tR$ ' + str('%.2f' % round(custos_combustiveis[0] + custos_pedagio, 2)))
+    print('Custos com transporte + pedágio usando Etanol  : \tR$ ' + str('%.2f' % round(custos_combustiveis[1] + custos_pedagio, 2)))
+    print('Custos com transporte + pedágio usando GNV     : \tR$ ' + str('%.2f' % round(custos_combustiveis[2] + custos_pedagio, 2)))
+    print('Custos com transporte + pedágio usando Diesel  : \tR$ ' + str('%.2f' % round(custos_combustiveis[3] + custos_pedagio, 2)))
+    print()
+    print('Custos com hospedagem     : \tR$ ' + str('%.2f' % round(custos_hospedagem, 2)))
+    print('Custos com alimentação    : \tR$ ' + str('%.2f' % round(custos_refeicao, 2)))
+    print('Custos com outras despesas: \tR$ ' + str('%.2f' % round(outras_despesas, 2)))
+    print()
+    print('Custo total da viagem de carro usando Gasolina : \tR$ ' + str(custos_viagem_por_combustivel[0]))
+    print('Custo total da viagem de carro usando Etanol   : \tR$ ' + str(custos_viagem_por_combustivel[1]))
+    print('Custo total da viagem de carro usando GNV      : \tR$ ' + str(custos_viagem_por_combustivel[2]))
+    print('Custo total da viagem de carro usando Diesel   : \tR$ ' + str(custos_viagem_por_combustivel[3]))
+    print()
+  
+  # se a viagem for tipo 2 = avião
+  elif tipo_viagem == 2:
+    # coleta de variaveis para este tipo de viagem
+    preco_passagem_pessoa = float(input('--- Qual o valor da passagem por pessoa por trecho?'))
+    despesa_uber = float(input('--- Qual o valor da despesa com UBER ou TAXI até o aeroporto?'))
+    dias_locacao_carro = int(input('--- Quantos dias de locação de carro?'))
+    # não precisa pedir o valor da diaria de locação de carro se não for locar o carro
+    if dias_locacao_carro != 0:
+      valor_locacao_carro = float(input('--- Qual o valor da diária da locação de carro?'))
+    else:
+      valor_locacao_carro = 0
+    
+    outras_despesas = float(input('--- Alguma outra despesa com o carro?'))
+
+    # calculos para viagem de avião
+    custos_passagens = qtde_pessoas * qtde_trechos * preco_passagem_pessoa
+    custos_uber = despesa_uber * qtde_trechos
+    custos_locacao_carro = dias_locacao_carro * valor_locacao_carro
+
+    custos_aviao_total = custos_passagens + custos_uber + custos_locacao_carro + custos_hospedagem + custos_refeicao + outras_despesas
+
+    # mostrando o resultado na tela
+    print()
+    print('           Resultado para viagem de avião           ')
+    print()
+    print('Custos com passagens          : \tR$ ' + str('%.2f' % round(custos_passagens, 2)))
+    print('Custos com Uber ou Taxi       : \tR$ ' + str('%.2f' % round(custos_uber, 2)))
+    print('Custos com Locação de Carro   : \tR$ ' + str('%.2f' % round(custos_locacao_carro, 2)))
+    print()
+    print('Custos com hospedagem         : \tR$ ' + str('%.2f' % round(custos_hospedagem, 2)))
+    print('Custos com alimentação        : \tR$ ' + str('%.2f' % round(custos_refeicao, 2)))
+    print('Custos com outras despesas    : \tR$ ' + str('%.2f' % round(outras_despesas, 2)))
+    print()
+    print('Custo total da viagem de avião: \tR$ ' + str('%.2f' % round(custos_aviao_total, 2)))
+    print()
+
+  #aqui pedimos se o usuário deseja executar novamente o software
+  print()
+  executar_novamente = input('Deseja executar novamente? (S = sim ou qualquer tecla para não)')
+  run = True if executar_novamente.lower() == 's' else False
+  # a linha acima é a mesma coisa que fazer a operação abaixo
+  # if executar_novamente.lower() == "s":
+  #  run = True
+  # else:
+  #  run = False
